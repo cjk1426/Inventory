@@ -39,7 +39,7 @@ public class GrossSalaryPerWeek {
 
         String weekselect = "";
 
-        // Read and process each line of the CSV file
+        // Read and process each line of the CSV file to get available weeks
         while ((line = br.readLine()) != null) {
             String[] details = line.split(csvSplitBy);
             String dateStr = details[3];
@@ -48,7 +48,7 @@ public class GrossSalaryPerWeek {
             String weeknum = String.valueOf(weekOfYear);
 
             if (!weekselect.contains(weeknum)) {
-                weekselect = weekselect.isEmpty() ? weeknum : weekselect + "," + weeknum;
+                weekselect = weekselect.isEmpty() ? weeknum : weekselect + ", " + weeknum;
             }
         }
 
@@ -59,14 +59,77 @@ public class GrossSalaryPerWeek {
         Scanner scanner = new Scanner(System.in);
         System.out.print("Enter the week: ");
         int weekNumber = scanner.nextInt();
-        scanner.close();
+         scanner.nextLine(); 
+       // scanner.close();
+        
         
         // Reset BufferedReader to the start of the file
         br.close();
         br = new BufferedReader(new FileReader(csvFile));
         br.readLine(); // Skip the header row again
 
-        // Read and process each line of the CSV file
+        String employeeIDs = "";
+
+        // Get the available employee IDs within the chosen week
+        while ((line = br.readLine()) != null) {
+            String[] details = line.split(csvSplitBy);
+            String dateStr = details[3];
+            LocalDate date = LocalDate.parse(dateStr, dateFormatter);
+            int weekOfYear = date.get(ChronoField.ALIGNED_WEEK_OF_YEAR);
+
+            // Check if the current line's week matches the chosen week
+            if (weekNumber == weekOfYear) {
+                String employeeID = details[0];
+
+                // Add employee ID to the employeeIDs string in the desired format
+                if (!employeeIDs.contains(employeeID)) {
+                    employeeIDs = employeeIDs.isEmpty() ? employeeID : employeeIDs + ", " + employeeID;
+                }
+            }
+        }
+     
+
+        // Print the selected employee IDs
+        System.out.println("Select from the employee IDs: " + employeeIDs); 
+        
+        System.out.print("Enter EmployeeID: ");
+        String employeeNumber = scanner.nextLine();
+        scanner.close();
+
+           br.close();
+     
+           
+           // Get the hourly rate
+       // String currentPath = System.getProperty("user.dir");
+        String csvFileEmpD = System.getProperty("user.dir") + File.separator + "resources\\EmployeeDetails.csv"; // Build the file path
+        String linedata;
+      //  String delimiter = "\\|"; // Comma delimiter used in the CSV file     
+      
+      BufferedReader brEmp = new BufferedReader(new FileReader(csvFileEmpD));
+            String hourlyRate = null;
+            
+            while ((line = brEmp.readLine()) != null) {
+                String[] data = line.split(csvSplitBy);
+                 
+                if (data[0].equals(employeeNumber)) {
+                    hourlyRate = data[18];
+                    break;
+                }
+            }
+            
+             br.close();
+  System.out.println(hourlyRate);
+
+            
+      
+           
+           
+        // Reset BufferedReader to the start of the file
+        br = new BufferedReader(new FileReader(csvFile));
+        br.readLine(); // Skip the header row again
+
+        
+        // Read and process each line of the CSV file to calculate hours worked
         while ((line = br.readLine()) != null) {
             String[] details = line.split(csvSplitBy);
             String employeeID = details[0];
@@ -78,7 +141,7 @@ public class GrossSalaryPerWeek {
             LocalDate date = LocalDate.parse(dateStr, dateFormatter);
             int weekOfYear = date.get(ChronoField.ALIGNED_WEEK_OF_YEAR);
 
-            if (weekNumber == weekOfYear) {
+            if (weekNumber == weekOfYear && employeeID.equals(employeeNumber)) {
                 // Parse times
                 LocalTime inTime = LocalTime.parse(logIn, timeFormatter);
                 LocalTime outTime = LocalTime.parse(logOut, timeFormatter);
@@ -93,10 +156,36 @@ public class GrossSalaryPerWeek {
         }
         br.close();
         
-        // Print total hours worked for each employee
-        System.out.println("Weekly Hours Worked for Week " + weekNumber + ":");
+        //String Totalhwork = hoursWorked;
+        // Print total hours worked for the selected employee
+        // Accumulate total hours worked for the selected employee
+            double totalHoursWorked = employeeHours.values().stream().mapToDouble(Double::doubleValue).sum();
+
+        System.out.println("Weekly Hours Worked for Week " + weekNumber + " by Employee " + employeeNumber + ":");
         for (Map.Entry<String, Double> entry : employeeHours.entrySet()) {
             System.out.printf("%s: %.2f hours%n", entry.getKey(), entry.getValue());
         }
+        
+        
+        
+        
+      //  double totalHoursWorked = 0.0;
+//        for (Map.Entry<String, Double> entry : employeeHours.entrySet()) {
+//             totalHoursWorked += entry.getValue();
+//        }
+        
+            // Calculate and print gross weekly salary
+          //  int hrate = Integer.parseInt(hourlyRate);
+                     System.out.println(totalHoursWorked  );
+                      System.out.println( hourlyRate);
+            
+                if (hourlyRate != null) {
+                   double hrate = Double.parseDouble(hourlyRate);
+    
+                   double grossWeeklySalary = hrate * totalHoursWorked;
+                    System.out.println("Gross Weekly Salary: " + grossWeeklySalary);
+               } else {
+                   System.out.println("Hourly rate is missing.");
+                }
     }
 }

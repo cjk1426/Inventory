@@ -36,7 +36,6 @@ public class EmployeeInformation {
                     System.out.println("Employee Number: " + details[0]);
                     System.out.println("Employee Name: " + details[2] + " " + details[1]); // First Name + Last Name
                     System.out.println("Birthday: " + details[3]);
-                                        System.out.println("address: " + details[4]);
                     System.out.println("Rate: " + details[18]);
                     break;
                 }
