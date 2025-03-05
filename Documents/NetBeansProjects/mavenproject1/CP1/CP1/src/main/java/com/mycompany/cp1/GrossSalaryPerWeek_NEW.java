@@ -23,6 +23,10 @@ public class GrossSalaryPerWeek_NEW {
         String currentPath = System.getProperty("user.dir");
         String csvFile = currentPath + File.separator + "resources" + File.separator + "EmployeeDataAttendanceRecord.csv";
         String csvFileEmpD = currentPath + File.separator + "resources" + File.separator + "EmployeeDetails.csv";
+        //for update add the SSS matrix resources csv file
+         String csvSSSMatrix = currentPath + File.separator + "resources" + File.separator + "SSS Contribution_Mod.csv";
+        
+        
         String csvSplitBy = "\\|";
         DateTimeFormatter timeFormatter = DateTimeFormatter.ofPattern("H:mm");
         DateTimeFormatter dateFormatter = DateTimeFormatter.ofPattern("M/d/yyyy");
@@ -66,12 +70,41 @@ public class GrossSalaryPerWeek_NEW {
                     BasicSalary = details[14]; // basic salary
                     break;
                 }
+
+             
             }
         }
         //check the SSS salary deduction range 
-        //for update
+        //if basic salary within the range true then deduction on details[3]
         
-        
+        try (BufferedReader SssLookUp = new BufferedReader(new FileReader(csvSSSMatrix))) {
+            String line;
+//            double Bs = Double.parseDouble(BasicSalary);
+            
+            
+            while ((line = SssLookUp.readLine()) != null) {
+                String[] details = line.split(csvSplitBy);
+                        
+                
+               // double min = details[0].equals("Min") ? 0 : Double.parseDouble(details[0].replace(",", ""));
+                
+         
+
+        try {
+            int number = Integer.parseInt(details[0]);
+            System.out.println("Integer value: " + number);
+        } catch (NumberFormatException e) {
+            System.out.println("Invalid integer string: " + details[0]);
+        }
+                        
+                          //System.out.println( parse.int(details[0]));  
+                        
+                    
+
+                    
+                 
+            }
+        }
         
         
         //for update
