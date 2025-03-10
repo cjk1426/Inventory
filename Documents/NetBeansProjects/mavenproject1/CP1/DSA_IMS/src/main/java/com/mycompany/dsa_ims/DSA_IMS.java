@@ -12,7 +12,8 @@ public class DSA_IMS {
            //sample to add new stocks to the hash table.
         motorPHInventory.addStock("2/1/2023", "Old", "Honda", "142QVTSIUR", "On-hand");
         motorPHInventory.addStock("3/1/2023", "New", "Suzuki", "NO8VW05PU9", "On-hand");
-
+        motorPHInventory.addStock("3/1/2023", "New", "Suzuki", "NO8VW05PU9", "On-hand");
+ 
         //sample to delete incorrect stocks from the hash table.
         motorPHInventory.deleteStock("142QVTSIUR");
 
